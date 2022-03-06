@@ -11,7 +11,7 @@
 
   export default {
     name: "Scroll",
-   props: {
+    props: {
       probeType: {
         type: Number,
         default: 0

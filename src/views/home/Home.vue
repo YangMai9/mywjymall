@@ -33,6 +33,7 @@ import FeatureView from "./childComps/FeatureView";
 import TabControl from "../../components/context/tabControl/TabControl";
 
 import {getHomeMultidata,getHomeGoods} from "@/network/home";
+import {itemListerMixin,backTopMixin} from "@/common/mixin";
 
 
 
@@ -62,7 +63,6 @@ export default {
     TabControl,
     GoodList,
     Scroll,
-    BackTop
   },
   created() {
     this.getHomeMultidata()
@@ -71,11 +71,8 @@ export default {
     this.getHomeGoods('sell')
 
   },
+  mixins: [itemListerMixin,backTopMixin],
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 50)
-    this.$bus.$on('itemImageLoad',() => {
-      refresh()
-    })
   },
   activated() {
     this.$refs.scroll.scrollTo(0,this.saveY,0)
@@ -83,6 +80,8 @@ export default {
   },
   deactivated() {
     this.saveY = this.$refs.scroll.getScrollY()
+
+    this.$bus.$off('itemImgLoad',this.itemImgListener)
   },
   methods: {
 
@@ -101,9 +100,6 @@ export default {
       }
       this.$refs.tabControl1.currentIndex = index
       this.$refs.tabControl2.currentIndex = index
-    },
-    backClick() {
-        this.$refs.scroll.scrollTo(0,0,500)
     },
     contentScroll(position) {
       //吸顶
